@@ -1,0 +1,115 @@
+ <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mazda 323 | Protege | Lantis Online Immobilizer PIN Code Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+        body { background-color: #a4b7e3; }
+        .container {
+            background-color: #ffffff;
+            width: 60%;
+            min-width: 27.5em;
+            padding: 3.12em 1.87em;
+            padding-bottom: 1em;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+            box-shadow: 0 1.25em 3.43em rgba(0, 0, 0, 0.08);
+            border-radius: 0.5em;
+        }
+        input[type="file"] { display: none; }
+        label {
+            display: block;
+            position: relative;
+            background-color: #025bee;
+            color: #ffffff;
+            font-size: 1.1em;
+            text-align: center;
+            width: 19em;
+            padding: 1em 0;
+            border-radius: 0.3em;
+            margin: 0 auto 1em auto;
+            cursor: pointer;
+        }
+        .active { border: 0.2em dashed #025bee; }
+        #error {
+            text-align: center;
+            color: #ff3030;
+        }
+        #message {
+            text-align: center;
+            color: #000;
+        }
+        h1 { text-align: center; }
+        h3 { text-align: right; font-size: 0.7em; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+    <h1>Mazda 323 | Protege | Lantis Immo PIN Code Calculator</h1><br />
+      <input type="file" id="upload-button" multiple accept="application/*" />
+      <label for="upload-button">
+            <i class="fa-solid fa-upload"></i>&nbsp; CHOOSE / DROP EEPROM DUMP
+      </label>
+      <div id="error"></div>
+      <div id="message"></div>
+      <br /><br />
+      <h3>Written by <a href="https://youtube.com/@bmelad">bmelad</a></h3>
+    </div>
+    <script type="text/javascript">
+        let uploadButton = document.getElementById("upload-button");
+        let fileName = document.getElementById("file-name");
+        let container = document.querySelector(".container");
+        let error = document.getElementById("error");
+        let message = document.getElementById("message");
+
+        const fileHandler = (file, name, type) => {
+            if (type.split("/")[0] !== "application") {
+                error.innerText = "Please upload a valid EEPROM dump of Mazda 323";
+                return false;
+            }
+
+            error.innerText = "";
+            let reader = new FileReader();
+            reader.readAsArrayBuffer(file);
+            reader.onloadend = () => {
+                let bytes = new Uint8Array(reader.result);
+                if (bytes.length != 256) {
+                    error.innerText = "Your input file length is invalid, it should be 256 bytes.";
+                    return false;
+                }
+
+                let pincode = bytes[23].toString(16) + "" + bytes[25].toString(16) + "" + bytes[27].toString(16) + "" + bytes[29].toString(16);
+                message.innerText = "Your PIN code is: " + pincode;
+            };
+        };
+
+        uploadButton.addEventListener("change", () => {
+            Array.from(uploadButton.files).forEach((file) => {fileHandler(file, file.name, file.type); });
+        });
+
+        container.addEventListener("dragenter", (e) => {e.preventDefault(); e.stopPropagation(); container.classList.add("active"); }, false);
+        container.addEventListener("dragleave", (e) => {e.preventDefault(); e.stopPropagation(); container.classList.remove("active"); }, false);
+        container.addEventListener("dragover", (e) => {e.preventDefault(); e.stopPropagation(); container.classList.add("active"); }, false);
+        container.addEventListener("drop", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            container.classList.remove("active");
+            let draggedData = e.dataTransfer;
+            let files = draggedData.files;
+            Array.from(files).forEach((file) => { fileHandler(file, file.name, file.type);  });
+            }, false);
+
+        //window.onload = () => { error.innerText = ""; };
+    </script>
+  </body>
+</html>
